@@ -62,6 +62,12 @@ public class Corso {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "Corso [codins=" + codins + ", crediti=" + crediti + ", nome=" + nome + ", pd=" + pd + "]";
+	}
+	
+	
 	
 	
 

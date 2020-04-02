@@ -1,10 +1,12 @@
 package it.polito.tdp.lab04;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Model;
+import it.polito.tdp.lab04.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -33,7 +35,7 @@ public class FXMLController {
 	private TextField txtMatricola;
 
 	@FXML
-	private CheckBox boolButton;
+	private Button boolButton;
 
 	@FXML
 	private TextField txtNome;
@@ -56,16 +58,69 @@ public class FXMLController {
 	@FXML
 	void bool(ActionEvent event) {
 
+		int matricola = -1;
+		try {
+			matricola = Integer.parseInt(txtMatricola.getText());
+		} catch (NumberFormatException nf) {
+			return;
+		}
+		if (model.getStudentePerMatricola(matricola) != null) {
+			txtNome.setText(model.getStudentePerMatricola(matricola).getNome());
+			txtCognome.setText(model.getStudentePerMatricola(matricola).getCognome());
+		} else
+			return;
 	}
 
 	@FXML
 	void cercaCorsi(ActionEvent event) {
+
+		int matricola = -1;
+		try {
+			matricola = Integer.parseInt(txtMatricola.getText());
+		} catch (NumberFormatException nf) {
+			return;
+		}
+
+		if (model.getStudentePerMatricola(matricola) != null) {
+			if (corsoCBXbutton.getValue().equals("Corsi")) {
+			for (Corso c : model.getCorsiPerMatricola(matricola))
+				if (txtFinale.getText().equals(""))
+					txtFinale.appendText(c.toString());
+				else
+					txtFinale.appendText("\n" + c.toString());
+			}
+			else {
+				Corso c = model.getCorsoPerNome(corsoCBXbutton.getValue());
+				if (model.getCorsiPerMatricola(matricola).contains(c))
+					txtFinale.setText("Studente gia' iscritto a questo corso!");
+				else txtFinale.setText("Studente non iscritto a questo corso!"); 
+			}
+		} else
+			return;
 
 	}
 
 	@FXML
 	void cercaIscrCorso(ActionEvent event) {
 
+		try {
+			List<Studente> s;
+			if (corsoCBXbutton.getValue() != " ") {
+				Corso c = model.getCorsoPerNome(corsoCBXbutton.getValue());
+				s = model.getStudentiPerCorso(c);
+
+			} else
+				s = model.getTuttiGliStudenti();
+
+			for (Studente temp : s)
+				if (txtFinale.getText().equals(""))
+					txtFinale.setText(temp.toString());
+				else
+					txtFinale.appendText("\n" + temp.toString());
+		} catch (Exception e) {
+			txtFinale.appendText("Scegliere un corso!\n");
+			return;
+		}
 	}
 
 	@FXML
@@ -103,8 +158,10 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		corsoCBXbutton.setValue("Corsi");
+		corsoCBXbutton.getItems().add("Corsi");
 		for (Corso c : model.getTuttiICorsi())
 			corsoCBXbutton.getItems().add(c.getNome());
-		corsoCBXbutton.getItems().add("");
+		corsoCBXbutton.getItems().add(" ");
 	}
 }

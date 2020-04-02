@@ -7,12 +7,12 @@ public class Studente {
 	String cognome;
 	String CDS;
 
-	public Studente(int matricola, String nome, String cognome, String cDS) {
+	public Studente(int matricola, String cognome, String nome, String CDS) {
 		super();
 		this.matricola = matricola;
 		this.nome = nome;
 		this.cognome = cognome;
-		CDS = cDS;
+		this.CDS = CDS;
 	}
 
 	public int getMatricola() {
@@ -69,4 +69,10 @@ public class Studente {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Studente [matricola=" + matricola + ", nome=" + nome + ", cognome=" + cognome + ", CDS=" + CDS + "]";
+	}
+
+	
 }
