@@ -35,4 +35,9 @@ public class Model {
 		CorsoDAO dao = new CorsoDAO();
 		return dao.getCorsiPerMatricola(matricola);
 	}
+	
+	public boolean inscriviStudenteACorso(Studente studente, Corso corso) {
+		CorsoDAO dao = new CorsoDAO();
+		return dao.inscriviStudenteACorso(studente, corso);
+	}
 }

@@ -73,7 +73,6 @@ public class FXMLController {
 
 	@FXML
 	void cercaCorsi(ActionEvent event) {
-
 		int matricola = -1;
 		try {
 			matricola = Integer.parseInt(txtMatricola.getText());
@@ -82,21 +81,23 @@ public class FXMLController {
 		}
 
 		if (model.getStudentePerMatricola(matricola) != null) {
-			if (corsoCBXbutton.getValue().equals("Corsi")) {
-			for (Corso c : model.getCorsiPerMatricola(matricola))
-				if (txtFinale.getText().equals(""))
-					txtFinale.appendText(c.toString());
-				else
-					txtFinale.appendText("\n" + c.toString());
-			}
-			else {
+			if (corsoCBXbutton.getValue().equals(" ")) {
+				txtFinale.setText("");
+				for (Corso c : model.getCorsiPerMatricola(matricola))
+					if (txtFinale.getText().equals(""))
+						txtFinale.appendText(c.toString());
+					else
+						txtFinale.appendText("\n" + c.toString());
+			} else {
 				Corso c = model.getCorsoPerNome(corsoCBXbutton.getValue());
 				if (model.getCorsiPerMatricola(matricola).contains(c))
 					txtFinale.setText("Studente gia' iscritto a questo corso!");
-				else txtFinale.setText("Studente non iscritto a questo corso!"); 
+				else
+					txtFinale.setText("Studente non iscritto a questo corso!");
 			}
-		} else
-			return;
+		} else {
+			txtFinale.setText("Studente con matricola " + matricola + " non trovato!");
+		}
 
 	}
 
@@ -112,6 +113,7 @@ public class FXMLController {
 			} else
 				s = model.getTuttiGliStudenti();
 
+			txtFinale.setText("");
 			for (Studente temp : s)
 				if (txtFinale.getText().equals(""))
 					txtFinale.setText(temp.toString());
@@ -130,6 +132,25 @@ public class FXMLController {
 
 	@FXML
 	void iscrivi(ActionEvent event) {
+
+		int matricola = -1;
+		try {
+			matricola = Integer.parseInt(txtMatricola.getText());
+		} catch (NumberFormatException nf) {
+			return;
+		}
+
+		if (model.getStudentePerMatricola(matricola) != null) {
+			if (corsoCBXbutton.getValue() != " ") {
+				boolean esito = model.inscriviStudenteACorso(model.getStudentePerMatricola(matricola),
+						model.getCorsoPerNome(corsoCBXbutton.getValue()));
+
+				if (esito == true)
+					txtFinale.setText("Studente iscritto con successo!");
+				else
+					txtFinale.setText("Errore durante l'iscrizione dello studente.");
+			}
+		}
 
 	}
 
@@ -159,7 +180,6 @@ public class FXMLController {
 	public void setModel(Model model) {
 		this.model = model;
 		corsoCBXbutton.setValue("Corsi");
-		corsoCBXbutton.getItems().add("Corsi");
 		for (Corso c : model.getTuttiICorsi())
 			corsoCBXbutton.getItems().add(c.getNome());
 		corsoCBXbutton.getItems().add(" ");
