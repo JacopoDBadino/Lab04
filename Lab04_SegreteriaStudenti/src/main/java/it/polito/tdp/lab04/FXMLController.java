@@ -141,15 +141,19 @@ public class FXMLController {
 		}
 
 		if (model.getStudentePerMatricola(matricola) != null) {
-			if (corsoCBXbutton.getValue() != " ") {
-				boolean esito = model.inscriviStudenteACorso(model.getStudentePerMatricola(matricola),
-						model.getCorsoPerNome(corsoCBXbutton.getValue()));
+			if (corsoCBXbutton.getValue() != " ")
+				if ((model.getCorsiPerMatricola(matricola))
+						.contains(model.getCorsoPerNome(corsoCBXbutton.getValue())) == false) {
+					boolean esito = model.inscriviStudenteACorso(model.getStudentePerMatricola(matricola),
+							model.getCorsoPerNome(corsoCBXbutton.getValue()));
 
-				if (esito == true)
-					txtFinale.setText("Studente iscritto con successo!");
-				else
-					txtFinale.setText("Errore durante l'iscrizione dello studente.");
-			}
+					if (esito == true)
+						txtFinale.setText("Studente iscritto con successo!");
+					else
+						txtFinale.setText("Errore durante l'iscrizione dello studente.");
+				} else
+					txtFinale.setText("Studente gia' iscritto al corso!");
+
 		}
 
 	}
